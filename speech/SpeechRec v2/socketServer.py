@@ -1,12 +1,15 @@
 import socket
+import time
+import sys
 
 class server():
     host = 'local host'
     port = 5000
+    timeout = 15
     s = socket.socket(socket.AF_INET,
                       socket.SOCK_STREAM)
     s.bind(('', port))
-    print("Listening for connection...")
+    s.settimeout(timeout)
     s.listen(1)
     c, addr = s.accept()
     print("CONNECTION FROM:", str(addr))

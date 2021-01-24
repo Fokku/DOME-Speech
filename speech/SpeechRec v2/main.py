@@ -1,20 +1,24 @@
 import os
 import time
 import recognizer
-import socketServer
 import json
+import databaseConnection as db
 try:
-    #from sense_hat import SenseHat
-    pass
-except ImportError:
-    print("Import Error, try: pip install sense_hat")
+    import socketServer
+except:
+    "Importing SocketServer failed"
 
-server = socketServer.server()
-
+#attempt to connect to raspi, times out in 15 seconds
+try:
+    server = socketServer.server()
+except:
+    print("Connection to RasPi could not be established\nEntering debug mode")
+dbcon = db.sqlutil()
 savedSet = set()
 nameSet = set()
 path = r"C:\Users\19022874\Desktop\C200\C200 Voice System\Audio"
-profileids = ["8b126ce5-0281-4b07-b66d-c0a7e576da2e", "daa14ddb-662f-4848-a2c7-1f0eb3dacaf1", "aef0f65d-abf5-4027-bed0-efed96dad93a", 'fc454f21-2c8c-4fc7-afde-00041b3a6255']
+profileids = [i[0] for i in dbcon.getlist("SELECT Uid FROM voiceProfile")]
+#["8b126ce5-0281-4b07-b66d-c0a7e576da2e", "daa14ddb-662f-4848-a2c7-1f0eb3dacaf1", "aef0f65d-abf5-4027-bed0-efed96dad93a", 'fc454f21-2c8c-4fc7-afde-00041b3a6255']
 
 
 for file in os.listdir(path):
