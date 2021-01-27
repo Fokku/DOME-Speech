@@ -26,7 +26,7 @@ class sqlutil:
         self.cnxn.close()
         print("Connection closed")
 a = sqlutil()
-print(a.getlist("SELECT * FROM Wordlist"))
+print(a.getlist("SELECT * FROM UserDetails"))
 a.close()
 
 #some code
