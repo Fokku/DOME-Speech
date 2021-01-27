@@ -22,7 +22,17 @@ class sqlutil:
         self.cnxn.commit()
         return self.cursor.fetchall()
     def close(self):
-        del self.cnxn
+        self.cursor.close()
+        self.cnxn.close()
+        print("Connection closed")
+a = sqlutil()
+print(a.getlist("SELECT * FROM Wordlist"))
+a.close()
+
+#some code
+"""
+INSERT 
+"""
 
 
 
