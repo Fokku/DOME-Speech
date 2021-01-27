@@ -8,11 +8,14 @@ try:
 except:
     "Importing SocketServer failed"
 
+debug = False
 #attempt to connect to raspi, times out in 15 seconds
 try:
     server = socketServer.server()
 except:
     print("Connection to RasPi could not be established\nEntering debug mode")
+    debug = True
+
 dbcon = db.sqlutil()
 savedSet = set()
 nameSet = set()
@@ -51,15 +54,30 @@ while True:
                 #SenseHat.show_letter(numbers[0])
                 #SenseHat.show_message("Welcome, {}".format(speaker))
                 #time.sleep(5)
-                server.send(json.dumps([numbers[0], speaker]))
+                if debug:
+                    print("Number: {}\nSpeaker: {}".format(numbers[0], speaker))
+                else:
+                    server.send(json.dumps([numbers[0], speaker]))
             elif len(numbers) == 0:
                 print("No numbers detected")
                 #SenseHat.show_message("No numbers detected")
             else:
                 print("Multiple numbers detected")
-                for i in numbers:
-                    server.send(json.dumps([i, speaker]))
+                if debug:
+                    print("Numbers: {}\nSpeaker: {}".format(numbers, speaker))
+                #for i in numbers:
+                #   server.send(json.dumps([i, speaker]))
                 #SenseHat.show_message("Multiple numbers detected")
+
+            if debug:
+                print("Sending SQL:\n{}".format("INSERT INTO voiceHistory (Uid, Voicefile, VoiceTxt) VALUES ('{}','{}','{}')".format(speaker, filepath, result)))
+
+            try:
+                dbcon.execSQL("INSERT INTO voiceHistory (Uid, Voicefile, VoiceTxt) VALUES ('{}','{}','{}')".format(speaker, filepath, result))
+                print("Successfully uploaded to database")
+            except:
+                print("Could not upload data to database")
+                raise Exception("SQL could not be executed")
             #TODO add code for showing numbers on raspi
 
 
