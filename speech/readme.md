@@ -14,14 +14,13 @@ identificationProfile.py:
 CLass to encapsulate voice profile returned by the identificationResponse.py class.
 
 identificationResponse.py:
-Class to handle the identification profile object returned by Speaker Identification
+Class to handle the identification profile object returned by Speaker Identification.
 
 identificationServiceClientHelper.py:
-Helper class for interacting with Speaker Recognition API
+Helper class for interacting with Speaker Recognition API.
 
 recognitzer.py:
 Class to communicate with Speech Recognition API.
 
 socketServer.py:
 Class to communicate with Raspi.
-
