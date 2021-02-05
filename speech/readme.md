@@ -1,6 +1,8 @@
 This is the main speech application
 The program utilizes Speech recognition and Speaker Identification
 
+SET <path> to local path
+
 main.py:
 Creates socket server to connect with Raspi, times out within 15 seconds if not connected and enters debug mode.
 Creates connection with database

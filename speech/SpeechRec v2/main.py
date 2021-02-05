@@ -44,42 +44,35 @@ while True:
             result = recognizer.speech_recognize_continuous_from_file(filepath)
             print("Recognized text: {}".format(result))
             speaker = recognizer.identify_file(filepath, "true", profileids)
+            if speaker != "00000000-0000-0000-0000-000000000000":
+                userid = dbcon.getlist("SELECT UserId from voiceProfile WHERE Uid = '{}'".format(speaker))
+            print("User ID: {}".format(userid[0][0]))
             numbers = []
             for char in list(result):
                 if char.isdigit():
                     numbers.append(char)
 
             if len(numbers) == 1:
-                pass
-                #SenseHat.show_letter(numbers[0])
-                #SenseHat.show_message("Welcome, {}".format(speaker))
-                #time.sleep(5)
                 if debug:
-                    print("Number: {}\nSpeaker: {}".format(numbers[0], speaker))
+                    print("Number: {}\nSpeaker ID: {}".format(numbers[0], speaker))
                 else:
-                    server.send(json.dumps([numbers[0], speaker]))
+                    server.send(json.dumps([numbers[0], userid]))
             elif len(numbers) == 0:
                 print("No numbers detected")
-                #SenseHat.show_message("No numbers detected")
             else:
                 print("Multiple numbers detected")
                 if debug:
                     print("Numbers: {}\nSpeaker: {}".format(numbers, speaker))
                 #for i in numbers:
                 #   server.send(json.dumps([i, speaker]))
-                #SenseHat.show_message("Multiple numbers detected")
-
             if debug:
-                print("Sending SQL:\n{}".format("INSERT INTO voiceHistory (Uid, Voicefile, VoiceTxt) VALUES ('{}','{}','{}')".format(speaker, filepath, result)))
+                print("Sending SQL:\n{}".format("INSERT INTO voiceHistory (Uid, Voicefile, VoiceTxt) VALUES ('{}','{}','{}')".format(speaker, filepath, str(result).replace("'", '"'))))
 
             try:
-                dbcon.execSQL("INSERT INTO voiceHistory (Uid, Voicefile, VoiceTxt) VALUES ('{}','{}','{}')".format(speaker, filepath, result))
+                dbcon.execSQL("INSERT INTO voiceHistory (Uid, Voicefile, VoiceTxt) VALUES ('{}','{}','{}')".format(speaker, filepath, str(result).replace("'", '"')))
                 print("Successfully uploaded to database")
             except:
                 print("Could not upload data to database")
-                raise Exception("SQL could not be executed")
-            #TODO add code for showing numbers on raspi
-
 
     time.sleep(2)
 
